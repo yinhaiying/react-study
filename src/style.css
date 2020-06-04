@@ -19,3 +19,12 @@
 .item{
   font-size:40px;
 }
+
+
+.content{
+  display:none;
+}
+
+.active{
+  display:flex;
+}

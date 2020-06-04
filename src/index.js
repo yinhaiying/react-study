@@ -1,44 +1,49 @@
-//  组件
+//  react状态：相当于vue中的data
+
 import React from 'react';
 import ReactDom from 'react-dom';
+import "./style.css"
+class Tab extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      c1:'content active',
+      c2:'content'
+    }
+  }
+  clickHandle(e){
+    let index = e.target.dataset.index;
+    // console.log(this);   this是undefined
+    console.log(this);   // this是undefined
+    if(index === "1"){
+      this.setState({
+        c1:'content active',
+        c2:'content'
+      })
+    }else{
+      this.setState({
+        c1:'content',
+        c2:'content  active'
+      })
+    }
 
-
-
-// 函数式组件
-function Header(props){
-  console.log('函数式组件');
-  console.log(props);
-  return (
-    <div>
-      <h2>标题：{props.title}</h2>
-    </div>
-  )
-}
-
-// // 类组件
-class Content extends React.Component{
-  // 类组件使用render方法进行渲染
-
+  }
   render(){
-    console.log('类组件');
-    console.log(this);
     return (
       <div>
-        <h2>title:类组件</h2>
-        <p>{this.props.content}</p>
+        {/* <button data-index = "1" onClick = {this.clickHandle}>内容一</button>
+        <button data-index = "2" onClick = {this.clickHandle}>内容二</button> */}
+     <button data-index = "1" onClick = {this.clickHandle.bind(this)}>内容一</button>
+        <button data-index = "2" onClick = {this.clickHandle.bind(this)}>内容二</button>
+        <div className = {this.state.c1}>内容一</div>
+        <div className = {this.state.c2}>内容二</div>
       </div>
     )
   }
 }
 
-const App = function(){
-  return (
-    <div>
-    <Header title = {'函数式组件传值'}/>
-    <Content content = {'类组件传值'} />
-    </div>
 
-  )
-}
 
-ReactDom.render(<App/>,document.getElementById('root'));
+
+
+ReactDom.render(<Tab/>,document.getElementById('root'));

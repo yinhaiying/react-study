@@ -88,3 +88,11 @@ const Header = function(){
 
 
 
+
+
+
+## state状态管理
+1. 在constructor构造函数中，初始化state,将需要操作的数据放到state对象中
+2. 通过setState修改数据，切勿直接修改数据。
+3. 通过setState修改完数据后，并不会立即修改DOM里面的内容，react会在这个组件所有状态设置完成后，统一对比虚拟DOM
+对象，然后再统一修改，提升性能。（这就是使用setState的原因)
