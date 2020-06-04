@@ -39,26 +39,26 @@ const Chessboard = function(){
         [null,null,null]
     ]);
     const [n,setN] = React.useState(0);
-    const tell = function(){
-        console.log('tell');
+    const [isFinished,setFinished] = React.useState(false);
+    const tell = function(copy){
+        if(copy[0][0] === copy[0][1] && copy[0][1] === copy[0][2] && copy[0][2] !== null){
+            console.log(copy[0][0] + '赢了');
+            setFinished(true);
+        }
     }
     // 改变CellsMap
     const onClickCell = (row,col) => {
-       console.log('行:' + row);
-       console.log('列：'+ col);
        //    如果我们没有改变数组的地址，那么直接set无法生效。
        let copy = JSON.parse(JSON.stringify(cellsMap));
-       copy[row][col] = n % 2 == 0 ? 'X' : 'O';
+       copy[row][col] = n % 2 === 0 ? 'X' : 'O';
        setCellsMap(copy);
        setN(n+1);
     //    判断胜负
-       tell();
+       tell(copy);
     }
-
     return (
         <div>
             <div>n:{n}</div>
-            {/* 生成多个Cell组件 */}
             {
                 cellsMap.map((items,row) => <div className = "row">
                     { items.map((item,col) => <div className = "cell">
@@ -66,6 +66,7 @@ const Chessboard = function(){
                     </div>)
                 }</div>)
             }
+            {isFinished && <div>游戏结束</div>}
         </div>
     )
 }
