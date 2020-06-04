@@ -10,3 +10,8 @@
 .row{
     display:flex;
 }
+
+.bg-color{
+    color:red;
+    background:green;
+}

@@ -6,7 +6,7 @@ import ReactDom from 'react-dom';
 // const oDiv = document.createElement('div');
 // const oP = document.createElement('p');
 // const oSpan = document.createElement('span');
-// oSpan.innerText = "这是一个span";
+// oSpan.innerText = "Hello,React";
 // oP.appendChild(oSpan);
 // oDiv.appendChild(oP);
 // document.body.appendChild(oDiv);
@@ -25,7 +25,7 @@ import ReactDom from 'react-dom';
 //   if(children){
 //     // 判断是不是文本 appendChild不支持直接添加文本
 //     if(typeof children === 'string'){
-//         var childElement = document.createTextNode(children);
+//         const childElement = document.createTextNode(children);
 //         element.appendChild(childElement);
 //     }else{
 //         element.appendChild(children);
@@ -78,7 +78,7 @@ const div = (
 
 console.log(div);   // object 我们可以发现这是一个对象 实际上就是一个虚拟的DOM，他不是一个元素
 
-// document.body.appendChild(div);     由于它是虚拟DOM，因此我们无法直接将其添加到body上。
+// document.body.appendChild(div);   //  由于它是虚拟DOM，因此我们无法直接将其添加到body上。
 // 如果我们想要将其渲染到页面上，这时候就需要react-dom
 
 ReactDom.render(div,document.getElementById('root'));
