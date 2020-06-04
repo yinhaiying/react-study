@@ -1,4 +1,4 @@
-//  class设置
+//  react中的注释
 import React from 'react';
 import ReactDom from 'react-dom';
 import './style.css';

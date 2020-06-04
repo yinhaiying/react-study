@@ -13,8 +13,7 @@ const Header = function(){
     return (
         <div>
           <h2 className = {'item ' + className}>标题：{title}</h2>
-          {/* <h2 className = {subTitleClass}>小标题：{title}</h2> */}
-          {/* 这里写注释 */}
+          <h2 className = {subTitleClass}>小标题：{title}</h2>
           <img src = {'https://img.58cdn.com.cn/logo/58/252_84/logo-o.png?v=2'} alt = "logo"/>
           <div>内容部分</div>
         </div>
