@@ -10,21 +10,21 @@ class ParentCom extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      title:''
+      isActive:true
     }
   }
   render(){
     return (
       <div>
-        <h1>子元素传递给父元素的数据：{this.state.title}</h1>
-        <ChildCom setChildData  = {this.setChildData} />
+        <button onClick = {this.changeShow.bind(this)}>显示</button>
+        <ChildCom isActive = {this.state.isActive} />
       </div>
     )
 
   }
-  setChildData = (data) => {
+  changeShow(){
     this.setState({
-      title:data
+      isActive:!this.state.isActive
     })
   }
 
@@ -33,30 +33,16 @@ class ParentCom extends React.Component{
 
 class ChildCom extends React.Component{
   constructor(props){
-    super(props);
-    this.state = {
-      msg:'hello,react'
-    }
+    super(props)
   }
   render(){
+    let className = null;
+    className = this.props.isActive ? 'active' :'';
     return (
-      <div>
-        <button onClick = {this.sendData.bind(this)}>点击子组件传值</button>
+      <div className = {'content ' + className}>
+        子元素内容
       </div>
     )
   }
-  sendData(){
-    this.props.setChildData(this.state.msg);
-    this.setState({
-      msg:'111'
-    })
-  }
 }
-
-
-
-
-
-
-
 ReactDom.render(<ParentCom/>,document.getElementById('root'));
