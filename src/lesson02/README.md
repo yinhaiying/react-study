@@ -124,6 +124,78 @@ const Header = function(){
 由于react绑定的必须是一个函数，因此我们不能直接对函数传参(这样就直接执行了)，我们必须使用一个箭头函数包裹起来。这样
 绑定的就是一个函数了。
 ```javascript
-<button onClick = {(e) => {this.onClick('123',e)}}></button> 
+<button onClick = {(e) => {this.onClick('123',e)}}></button>
 ```
 
+
+## 条件渲染
+React中的条件渲染，即和javascript中的条件运算符,如if...else，三元运算符等的使用相同。
+直接通过条件运算返回要渲染的JSX对象
+
+
+## 列表渲染
+由于React不是一种模板语言，因此它不像vue一样提供v-for这种遍历的方法，如果我们想要进行列表渲染，
+只能手动地将一个数组添加到JSX中。
+1. 会直接将一个数组解构出来进行渲染，但是不会自动添加HTML元素。你数组中是什么就渲染成什么
+```javascript
+
+class Content extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      list:['张三','李四','王五']
+    }
+  }
+  render(){
+    return (
+      <ul>
+        {this.state.list}    // 直接渲染成张三，李四，王五
+      </ul>
+    )
+  }
+}
+```
+2. 如果我们想要将内容生成列表，我们就需要将内容转变成JSX数组。
+```javascript
+class Content extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      list:[
+        <li>张三</li>,
+        <li>李四</li>,
+        <li>王五</li>
+      ]
+    }
+  }
+  render(){
+    return (
+      <ul>
+        {this.state.list}
+      </ul>
+    )
+  }
+}
+```
+3. 使用map来简化生成JSX列表的过程。我们都知道map会对数组每一项进行操作，然后返回新的数组。
+```javascript
+class Content extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      list:['张三','李四','王五']
+    }
+  }
+  render(){
+    return (
+      <ul>
+        {
+          this.state.list.map((item,index) => {
+            return <li key = {index}>姓名：{item}</li>
+          })
+        }
+      </ul>
+    )
+  }
+}
+```
