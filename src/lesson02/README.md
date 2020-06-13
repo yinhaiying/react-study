@@ -199,3 +199,33 @@ class Content extends React.Component{
   }
 }
 ```
+
+## 生命周期
+组件从实例化到渲染到最终从页面销毁的整个过程
+生命周期三个阶段：
+1. Mounting:将组件插入到DOM中
+2. Updating:将数据更新到DOM中
+3. Unmounting:将组件从DOM中移除
+
+钩子函数：
+Mounting:
+0. constructor:
+1. componentWillMount:组件将要渲染
+2. render:渲染
+3. componentDidMount:组件渲染完成
+
+constructor执行 -> componentWillMount -> render -> componentDidMount
+
+
+执行顺序：
+Updating:
+4. componentWillReceiveProps:组件将要接收props数据
+5. shouldComponentUpdate:组件接收到新的state或者props,判断是否更新
+6. componentWillUpdate:组件将要更新
+7. render:渲染
+8. componentDidUpdate:组件已经更新
+
+componentWillUpdate -> render -> componentDidUpdate
+
+Unmounting:
+9. componentWillUnmount:组件将要卸载

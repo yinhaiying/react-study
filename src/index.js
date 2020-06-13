@@ -4,91 +4,50 @@ import React from 'react';
 import ReactDom from 'react-dom';
 
 
-// 自动渲染数组中的内容
-// class Content extends React.Component{
-//   constructor(props){
-//     super(props);
-//     this.state = {
-//       list:['张三','李四','王五']
-//     }
-//   }
-//   render(){
-//     return (
-//       <ul>
-//         {this.state.list}
-//       </ul>
-//     )
-//   }
-// }
-
-// 需要将数组内容改写成JSX类型的数组
-// class Content extends React.Component{
-//   constructor(props){
-//     super(props);
-//     this.state = {
-//       list:[
-//         <li>张三</li>,
-//         <li>李四</li>,
-//         <li>王五</li>
-//       ]
-//     }
-//   }
-//   render(){
-//     return (
-//       <ul>
-//         {this.state.list}
-//       </ul>
-//     )
-//   }
-// }
-
-
-//  使用map来简化改写成JSX的过程，map会创建一个新的数组
-// class Content extends React.Component{
-//   constructor(props){
-//     super(props);
-//     this.state = {
-//       list:['张三','李四','王五']
-//     }
-//   }
-//   render(){
-//     return (
-//       <ul>
-//         {
-//           this.state.list.map((item,index) => {
-//             return <li key = {index}>姓名：{item}</li>
-//           })
-//         }
-//       </ul>
-//     )
-//   }
-// }
-
-// 封装成组件
-
-function ListItem(props){
-  return (
-    <li >姓名：{props.data}</li>
-  )
-}
-class Content extends React.Component{
+class ComLife extends React.Component{
   constructor(props){
+    console.log('构造函数执行')
     super(props);
     this.state = {
-      list:['张三','李四','王五']
+      msg:'hello,world'
     }
   }
+
+  componentWillMount(){
+    console.log('componentWillMount:将要挂载');
+  }
+
+  componentDidMount(){
+    console.log('componentDidMount：组件渲染完毕');
+  }
+
+  componentWillReceiveProps(){
+    console.log('componentWillReceiveProps:组件将要接收props参数');
+  }
+  componentWillUpdate(){
+    console.log('componentWillUpdate:组件将要更新');
+  }
+  componentDidUpdate(){
+    console.log('componentDidUpdate:组件更新完毕');
+  }
+  componentWillUnmount(){
+    console.log('componentWillUnmount:组件将要卸载');
+  }
   render(){
+    console.log('render渲染函数');
     return (
-      <ul>
-        {
-          this.state.list.map((item,index) => {
-            return <ListItem data = {item} key = {index}/>
-          })
-        }
-      </ul>
+      <div>
+        <h1>{this.state.msg}</h1>
+        <button onClick = {this.onClickFn} >组件更新</button>
+      </div>
     )
+  }
+
+  onClickFn = () => {
+    this.setState({
+      msg:'跟新后的数据'
+    })
   }
 }
 
-ReactDom.render(<Content/>,document.getElementById('root'));
+ReactDom.render(<ComLife/>,document.getElementById('root'));
