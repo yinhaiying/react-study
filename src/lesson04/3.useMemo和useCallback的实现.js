@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import ReactDom from "react-dom";
 
 function Child({ data, addNum }) {
@@ -7,20 +7,6 @@ function Child({ data, addNum }) {
   return <button onClick={addNum}>{data.num}</button>;
 }
 Child = memo(Child);
-
-// 自定义useState
-let lastStates = [];
-let index = 0;
-function useState(initialState) {
-  let currentIndex = index;
-  lastStates[currentIndex] = lastStates[currentIndex] || initialState;
-  function setState(newState) {
-    lastStates[currentIndex] = newState;
-    render();
-  }
-  index += 1;
-  return [lastStates[currentIndex], setState];
-}
 
 // 自定义useCallback
 let lastCallback;
@@ -87,7 +73,6 @@ function App() {
   );
 }
 function render() {
-  index = 0;
   ReactDom.render(<App />, document.getElementById("root"));
 }
 
