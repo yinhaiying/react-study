@@ -105,7 +105,7 @@ const Counter = () => {
 
 其实我们可以看到，useReducer 的使用与 useState 非常类似。其中 useReducer 接收两个参数，一个 reducer 和一个初始化值。
 两者之间的差别是 state 状态的改变是直接通过 setState 进行改变，而 useReducer 改变
-状态是通过 dispatch 一个 action，然后通过 reducer 函数来处理。
+状态是通过 dispatch 一个 action，然后通过 reducer 函数来处理,实际上 useReducer 就是语法糖而已，真正的实现是通过 reducer 来改变的。
 
 ```javascript
 const [state, setState] = useState(0); // useState的使用
@@ -128,4 +128,52 @@ function useReducer(reducer, initialState) {
   }
   return [lastState, dispatch];
 }
+```
+
+## useContext
+
+useContext 接收一个`context`对象，并且返回该 context 的当前值。
+
+### useContext 的简单使用
+
+1. 创建一个 context 对象
+
+```javascript
+let AppContext = React.createContext();
+// AppContext 中两个属性 Provider 和 Consumer
+//  Provider是一个组件，是用来向子孙组件提供数据
+// Consumer是用来获取Provider数据
+```
+
+2. AppContext.Provider 组件包裹子组件，用来传递数据
+
+```javascript
+const App = () => {
+  let [state, setState] = useState(0);
+  return (
+    <AppContext.Provider value={{ state, setState }}>
+      <Counter />
+    </AppContext.Provider>
+  );
+};
+```
+
+3. 在子孙组件中通过 useContext 获取到数据
+
+```javascript
+const Counter = () => {
+  let value = useContext(AppContext); // useContext得到传递下来的值
+  return (
+    <div>
+      <p>{value.state}</p>
+      <button
+        onClick={() => {
+          value.setState(value.state + 1);
+        }}
+      >
+        add
+      </button>
+    </div>
+  );
+};
 ```
