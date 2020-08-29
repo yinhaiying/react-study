@@ -1,94 +1,38 @@
-import React, { memo } from "react";
+import React from "react";
 import ReactDom from "react-dom";
 
-function Child({ data, addNum }) {
-  // 当修改input的时候，虽然只是修改了name。但是导致Child组件也进行了渲染。这样是不合理的。
-  console.log("child render");
-  return <button onClick={addNum}>{data.num}</button>;
-}
-Child = memo(Child);
+// 老的状态state，动作action，一个普通的对象
+const reducer = (state, action) => {
+  if (action.type === "add") {
+    return state + 1;
+  } else {
+    return state;
+  }
+};
+let lastState;
 
-// 自定义useState
-let lastStates = [];
-let index = 0;
-function useState(initialState) {
-  let currentIndex = index;
-  lastStates[currentIndex] = lastStates[currentIndex] || initialState;
-  function setState(newState) {
-    lastStates[currentIndex] = newState;
+function useReducer(reducer, initialState) {
+  lastState = lastState || initialState;
+
+  function dispatch(action) {
+    lastState = reducer(lastState, action);
     render();
   }
-  index += 1;
-  return [lastStates[currentIndex], setState];
+  return [lastState, dispatch];
 }
 
-// 自定义useCallback
-let lastCallback;
-let lastCallbackDependencies; // 上一次依赖项的结果
-function useCallback(callback, dependencies) {
-  if (lastCallbackDependencies) {
-    //已经渲染过至少一次了
-    // 判断上一次的值和这次的值是否一致
-    const changed = !dependencies.every((item, index) => {
-      // 新的依赖数组是否每一项都和老的依赖数组中的每一项相同。
-      return item === lastCallbackDependencies[index];
-    });
-    if (changed) {
-      lastCallback = callback;
-      lastCallbackDependencies = dependencies;
-    }
-  } else {
-    // 没有渲染过
-    lastCallback = callback;
-    lastCallbackDependencies = dependencies;
-  }
-  return lastCallback;
-}
-
-let lastMemo;
-let lastMemoDependencies;
-// 自定义useMemo
-function useMemo(callback, dependencies) {
-  if (lastMemoDependencies) {
-    //已经渲染过至少一次了
-    // 判断上一次的值和这次的值是否一致
-    const changed = !dependencies.every((item, index) => {
-      // 新的依赖数组是否每一项都和老的依赖数组中的每一项相同。
-      return item === lastMemoDependencies[index];
-    });
-    if (changed) {
-      lastMemo = callback();
-      lastMemoDependencies = dependencies;
-    }
-  } else {
-    // 没有渲染过
-    lastMemo = callback();
-    lastMemoDependencies = dependencies;
-  }
-  return lastMemo;
-}
-function App() {
-  let [num, setNum] = useState(0);
-  let [name, setName] = useState("hello");
-
-  let addNum = useCallback(() => setNum(num + 1), [num]);
-  let data = useMemo(() => ({ num }), [num]);
-
+// {type：'add'}就是action是一个普通对象
+const Counter = () => {
+  const [state, dispatch] = useReducer(reducer, 0);
   return (
     <div>
-      <input
-        type="text"
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-      />
-      {JSON.stringify(name)}
-      <Child data={data} addNum={addNum}></Child>
+      <p>{state}</p>
+      <button onClick={() => dispatch({ type: "add" })}>add</button>
     </div>
   );
-}
+};
 function render() {
-  index = 0;
-  ReactDom.render(<App />, document.getElementById("root"));
+  ReactDom.render(<Counter />, document.getElementById("root"));
 }
 
 render();

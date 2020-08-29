@@ -76,3 +76,56 @@ function useCallback(callback, dependencies) {
   return lastCallback;
 }
 ```
+
+## useReducer
+
+### useReducer 的使用
+
+useReducer 接收一个形如(state,action) => newState 的 reducer，并返回当前的 state 以及与其配套的 dispatch 方法。
+
+```javascript
+const reducer = (state, action) => {
+  if (action.type === "add") {
+    return state + 1;
+  } else {
+    return state;
+  }
+};
+// {type：'add'}就是action是一个普通对象
+const Counter = () => {
+  const [state, dispatch] = useReducer(reducer, 0);
+  return (
+    <div>
+      <p>{state}</p>
+      <button onClick={() => dispatch({ type: "add" })}>add</button>
+    </div>
+  );
+};
+```
+
+其实我们可以看到，useReducer 的使用与 useState 非常类似。其中 useReducer 接收两个参数，一个 reducer 和一个初始化值。
+两者之间的差别是 state 状态的改变是直接通过 setState 进行改变，而 useReducer 改变
+状态是通过 dispatch 一个 action，然后通过 reducer 函数来处理。
+
+```javascript
+const [state, setState] = useState(0); // useState的使用
+const [state, dispatch] = useReducer(reducer, 0); // useReducer的使用
+```
+
+### useReducer 的简单实现
+
+useReducer 的使用跟 useState 类似，两者的简单实现也是类似的。
+
+```javascript
+let lastState;
+
+function useReducer(reducer, initialState) {
+  lastState = lastState || initialState;
+
+  function dispatch(action) {
+    lastState = reducer(lastState, action);
+    render();
+  }
+  return [lastState, dispatch];
+}
+```
