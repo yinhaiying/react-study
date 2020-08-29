@@ -247,3 +247,86 @@ function useEffect(callback, dependencies) {
   }
 }
 ```
+
+但是，上面的代码存在问题，那就是 useEffect 是在浏览器渲染完成之后执行的。但是目前的代码是 useEffect 会一直执行，
+执行完毕之后才会去渲染。也就是说 callback 的执行时机是有问题的。必须放到浏览器写个队列中执行,因此我们将 useEffect 放到一个宏任务中。
+
+```javascript
+let lastDependencies;
+function useEffect(callback, dependencies) {
+  if (lastDependencies) {
+    let changed = !dependencies.every((item, index) => {
+      return item === lastDependencies[index];
+    });
+    if (changed) {
+      setTimeout(callback);
+      lastDependencies = dependencies;
+    }
+  } else {
+    // 上次结果没有值，表示没有执行过
+    setTimeout(callback);
+    lastDependencies = dependencies;
+  }
+}
+```
+
+## useLayoutEffect
+
+useLayoutEffect 和 useEffect 的功能相似，只不过两者的执行时机不同。useEffect 是在浏览器渲染完成之后执行，
+因此不会阻断浏览器的渲染。但是 useLayoutEffect 是在浏览器渲染之前执行，会阻断浏览器的执行。
+
+```javascript
+function Animation() {
+  const animationRef = useRef();
+  console.log(animationRef);
+  useEffect(() => {
+    // useEffect是在浏览器渲染完成之后执行，不会阻断浏览器的执行
+    console.log("useEffect");
+    animationRef.current.style.transform = "translate(500px";
+    animationRef.current.style.transition = "all 500ms";
+  });
+  useLayoutEffect(() => {
+    // useLayoutEffect会阻断浏览器的执行
+    // while (true) {}
+    console.log("useLayoutEffect");
+    animationRef.current.style.transform = "translate(500px";
+    animationRef.current.style.transition = "all 500ms";
+  });
+  let style = {
+    width: "100px",
+    height: "100px",
+    backgroundColor: "red",
+  };
+  console.log("render");
+  return (
+    <div style={style} ref={animationRef}>
+      内容
+    </div>
+  );
+}
+```
+
+上面的代码中：`useEffect`执行，会首先打印出`render`，然后浏览器渲染完毕再打印出`useEffect`。
+但是，对于 useLayoutEffect,会首先打印出`render`，然后打印出`useEffect`，然后浏览器继续渲染，如果 useLayout 中有
+阻塞浏览器的行为， 比如渲染死循环，那么浏览器的渲染就会被阻塞。
+
+### useLayoutEffect 的实现
+
+```javascript
+let lastLayoutDependencies;
+function useLayoutEffect(callback, dependencies) {
+  if (lastDependencies) {
+    let changed = !dependencies.every((item, index) => {
+      return item === lastLayoutDependencies[index];
+    });
+    if (changed) {
+      Promise.resolve().then(callback);
+      lastLayoutDependencies = dependencies;
+    }
+  } else {
+    // 上次结果没有值，表示没有执行过
+    Promise.resolve().then(callback);
+    lastLayoutDependencies = dependencies;
+  }
+}
+```
