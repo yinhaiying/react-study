@@ -187,3 +187,63 @@ function useContext(context) {
   return context._currentValue;
 }
 ```
+
+## useEffect
+
+useEffect 是一个 Effect hook，给函数组件增加了操作副作用的能力。它实际上就是 class 组件中的 componentDidmount、componentDidUpdate 和 componentWillUnmount 具有相同的用途，相当于这三个 API 的合并。
+
+### useEffect 的简单使用
+
+useEffect 会在组件每次加载完成之后执行，它的执行取决于依赖项，如果依赖项发生变化会触发 useEffect 的执行。
+
+```javascript
+const Counter = () => {
+  const [name, setName] = useState("hello");
+  const [num, setNum] = useState(0);
+  useEffect(() => {
+    console.log("effect执行");
+    console.log("number:", num);
+  }, [num]);
+  return (
+    <div>
+      <p>姓名：{name}</p>
+      <p>数字：{num}</p>
+      <button
+        onClick={() => {
+          setName("world");
+        }}
+      >
+        changeName
+      </button>
+      <button
+        onClick={() => {
+          setNum(num + 1);
+        }}
+      >
+        add
+      </button>
+    </div>
+  );
+};
+```
+
+### useEffect 的简单实现
+
+```javascript
+let lastDependencies;
+function useEffect(callback, dependencies) {
+  if (lastDependencies) {
+    let changed = !dependencies.every((item, index) => {
+      return item === lastDependencies[index];
+    });
+    if (changed) {
+      callback();
+      lastDependencies = dependencies;
+    }
+  } else {
+    // 上次结果没有值，表示没有执行过
+    callback();
+    lastDependencies = dependencies;
+  }
+}
+```
