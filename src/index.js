@@ -1,5 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import ReactDom from "react-dom";
+
+function useContext(context) {
+  return context._currentValue;
+}
 
 let AppContext = React.createContext();
 // AppContext 中两个属性 Provider 和 Consumer

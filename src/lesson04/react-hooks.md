@@ -177,3 +177,13 @@ const Counter = () => {
   );
 };
 ```
+
+### useContext 的实现
+
+useContext 实际上就是返回一个共享变量。
+
+```javascript
+function useContext(context) {
+  return context._currentValue;
+}
+```
