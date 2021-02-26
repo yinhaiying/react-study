@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import ReactDom from "react-dom";
 /* 
 useEffect:简单的理解就是afterRender，当渲染的时候执行。
@@ -11,31 +11,29 @@ useEffect:简单的理解就是afterRender，当渲染的时候执行。
 */
 
 function App() {
-  const [n,setN] = useState(0);
+  const [n, setN] = useState(0);
   useEffect(() => {
     console.log("第一次的时候执行");
-  },[]);
+  }, []);
   useEffect(() => {
     console.log("n再次变化时候执行");
-  },[n]);
+  }, [n]);
   useEffect(() => {
     let timer = setInterval(() => {
-      console.log("hi")
-    },1000);
+      console.log("hi");
+    }, 1000);
     return () => {
       clearInterval(timer);
-    }
-  })
+    };
+  });
   const onClick = () => {
-    setN(i => i+1);
-  }
+    setN((i) => i + 1);
+  };
   return (
     <>
-    n的值为：{n}
-    <button onClick = {onClick}>点击</button>
+      n的值为： {n} <button onClick={onClick}> 点击 </button>{" "}
     </>
   );
 }
 
-ReactDom.render( <App/> , document.getElementById("root"));
-
+ReactDom.render(<App />, document.getElementById("root"));
