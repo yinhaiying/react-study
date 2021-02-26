@@ -137,3 +137,86 @@ const Child2 = React.memo(Child);
   // 使用useCallback
   const onClickChild = useCallback(() => {},[m])
 ```
+
+
+## useRef
+我们在使用useState的时候，有没有注意到state的值可能同时存在，如下所示：
+```js
+function App() {
+  console.log("App执行了")
+  const [n, setN] = useState(0);
+  const setLog = () => {
+    setTimeout(() => {
+      console.log("n:",n)  // 3秒后输出n
+    },3000)
+  }
+  return (
+    <>
+      n的值为：{n}
+      <button onClick={() => setN(n+1)}>add</button>
+      <button onClick={setLog}>先点击Log</button>
+    </>
+  );
+}
+```
+上面的代码中，我们先点击设置Log，它会在三秒后执行，输出n的值，然后我们点击add，实现n++，按理来说，此时应该会先让n增加变为1，然后输出1。但是，实际上我们会发现输出的是原来的n也就是0.这是因为，在react中state，每次修改时是创建一个新的state，也就是说如果存在异步，那么可能同时存在多个n，他们有不同的值。这是react的函数式思想决定的，函数式就是不让你去操作原来的变量，而是创建新的变量。但是，我们在开发中，经常可能需要一个值，能够使用同一个。那么应该如何做了？
+1. 将变量写在组件外，使用window.n。但是这中方法不太好，可能导致变量重复。
+2. 使用useRef:useRef不仅可以用于div，还能用于任意数据。useRef实际上就类似于一个window.xxx。只不过它内部使用{current:xxx}
+```js
+function App() {
+  console.log("App执行了")
+  const nRef = useRef(0)  // {current:0}
+  const setLog = () => {
+    setTimeout(() => {
+      console.log("n:",nRef.current)
+    },3000)
+  }
+  return (
+    <>
+      n的值为：{nRef.current}
+      <button onClick={() => nRef.current+=1}>点击n</button>
+      <button onClick={setLog}>点击Log</button>
+    </>
+  );
+}
+```
+但是，这会带来一个问题，我们发现我们的nRef值变为5了，页面中还是展示0.也就是说useRef的值修改不会触发页面的render。那么就需要我们手动去触发render。react没有提供手动触发render，那么我们只能通过修改state来触发更新。
+```js
+function App() {
+  console.log("App执行了")
+  const nRef = useRef(0)  // {current:0}
+  const [n,setN] = useState(null);  // 定义一个setN，用来触发更新。
+  const setLog = () => {
+    setTimeout(() => {
+      console.log("n:",nRef.current)
+    },3000)
+  }
+  return (
+    <>
+      n的值为：{nRef.current}
+      <button onClick={() =>{ nRef.current += 1;setN(nRef.current)}}>点击n</button>  
+      <button onClick={setLog}>点击Log</button>
+    </>
+  );
+}
+```
+但是我们发现我们实际上不需要使用n，因此，我们只需要拿到setN即可，也就是定义一个update函数用来更新即可。
+```js
+function App() {
+  const nRef = useRef(0)  // {current:0}
+  const update = useState(null)[1];  // update函数用来跟新。
+  const setLog = () => {
+    setTimeout(() => {
+      console.log("n:",nRef.current)
+    },3000)
+  }
+  return (
+    <>
+      n的值为：{nRef.current}
+      <button onClick={() =>{ nRef.current += 1;update(nRef.current)}}>点击n</button>
+      <button onClick={setLog}>点击Log</button>
+    </>
+  );
+}
+```
+3. 使用useContext。useContext也能够贯穿组件不变动。
